@@ -19,11 +19,22 @@ HEADERS = {
 
 app = Flask(__name__)
 
+# ✅ **Nieuwe root route**
+@app.route("/", methods=["GET"])
+def home():
+    return jsonify({"message": "Notion API Server is live!"}), 200
+
+# ✅ **Gezondheidscheck**
+@app.route("/health", methods=["GET"])
+def health_check():
+    return jsonify({"status": "healthy"}), 200
+
+# ✅ **Route voor ophalen van Notion-data**
 @app.route("/notion/<database_name>", methods=["GET"])
 def get_notion_data(database_name):
     if database_name not in DATABASES:
         return jsonify({"error": "Database niet gevonden"}), 404
-    
+
     database_id = DATABASES[database_name]
     url = f"https://api.notion.com/v1/databases/{database_id}/query"
     response = requests.post(url, headers=HEADERS)
